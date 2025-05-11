@@ -1,35 +1,42 @@
 import { useState } from "react"
 import GameZone from "./game-zones"
 
-function Tablero (){
-  const [turno, setTurno] = useState("X")
-  const [zona1, setZona1] = useState(turno)
-  const [zona2, setZona2] = useState(turno)
-  const [zona3, setZona3] = useState(turno)
-  const [zona4, setZona4] = useState(turno)
-  const [zona5, setZona5] = useState(turno)
-  const [zona6, setZona6] = useState(turno)
-  const [zona7, setZona7] = useState(turno)
-  const [zona8, setZona8] = useState(turno)
-  const [zona9, setZona9] = useState(turno)
+function Tablero ({obtenerJugador, manejarJugador, logicaTablero, manejarTablero}){
+  console.log(obtenerJugador);
+  const posiblesGanadores = [
+  [0, 1, 2], [3, 4, 5], [6, 7, 8], // filas
+  [0, 3, 6], [1, 4, 7], [2, 5, 8], // columnas
+  [0, 4, 8], [2, 4, 6]             // diagonales
+];
+
+  const handlerGameClick = (event) => {
+    const index = event.target.dataset.square
+    if(logicaTablero[index] === ""){
+      const nuevoTablero = [...logicaTablero]
+      nuevoTablero[index] = obtenerJugador
+      manejarTablero(nuevoTablero)
+      event.target.innerText = obtenerJugador
+      manejarJugador(obtenerJugador === "X" ? "O" : "X")
+    }
+  }
 
   return (
     <>
       <div className="flex flex-col w-full aspect-square bg-emerald-900">
         <div className="flex flex-row">
-          <GameZone obtenerJugada={zona1}/>
-          <GameZone obtenerJugada={zona2}/>
-          <GameZone obtenerJugada={zona3}/>
+          <GameZone numeroZona={"0"} obtenerJugada={logicaTablero[0]} funcionManejoClick={handlerGameClick}/>
+          <GameZone numeroZona={"1"} obtenerJugada={logicaTablero[1]} funcionManejoClick={handlerGameClick}/>
+          <GameZone numeroZona={"2"} obtenerJugada={logicaTablero[2]} funcionManejoClick={handlerGameClick}/>
         </div>
         <div className="flex flex-row">
-          <GameZone obtenerJugada={zona4}/>
-          <GameZone obtenerJugada={zona5}/>
-          <GameZone obtenerJugada={zona6}/>
+          <GameZone numeroZona={"3"} obtenerJugada={logicaTablero[3]} funcionManejoClick={handlerGameClick}/>
+          <GameZone numeroZona={"4"} obtenerJugada={logicaTablero[4]} funcionManejoClick={handlerGameClick}/>
+          <GameZone numeroZona={"5"} obtenerJugada={logicaTablero[5]} funcionManejoClick={handlerGameClick}/>
         </div>
         <div className="flex flex-row">
-          <GameZone obtenerJugada={zona7}/>
-          <GameZone obtenerJugada={zona8}/>
-          <GameZone obtenerJugada={zona9}/>
+          <GameZone numeroZona={"6"} obtenerJugada={logicaTablero[6]} funcionManejoClick={handlerGameClick}/>
+          <GameZone numeroZona={"7"} obtenerJugada={logicaTablero[7]} funcionManejoClick={handlerGameClick}/>
+          <GameZone numeroZona={"8"} obtenerJugada={logicaTablero[8]} funcionManejoClick={handlerGameClick}/>
         </div>
       </div>
     </>

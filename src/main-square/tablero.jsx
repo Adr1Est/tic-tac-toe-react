@@ -1,23 +1,43 @@
-import { useState } from "react"
 import GameZone from "./game-zones"
 
-function Tablero ({obtenerJugador, manejarJugador, tablero, manejarTablero}){
-  console.log(obtenerJugador);
+function Tablero ({obtenerJugador, manejarJugador, tablero, manejarTablero, capturarMensaje}){
   const posiblesGanadores = [
-  [0, 1, 2], [3, 4, 5], [6, 7, 8], // filas
-  [0, 3, 6], [1, 4, 7], [2, 5, 8], // columnas
-  [0, 4, 8], [2, 4, 6]             // diagonales
-];
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // filas
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // columnas
+    [0, 4, 8], [2, 4, 6]             // diagonales
+  ];
 
   const handlerGameClick = (event) => {
     const index = event.target.dataset.square
+
+    // Si hay algo en la celda, no permite más acciones
+    if(tablero[index] !== "") return
+
     if(tablero[index] === ""){
       const nuevoTablero = [...tablero]
       nuevoTablero[index] = obtenerJugador
       manejarTablero(nuevoTablero)
-      event.target.innerText = obtenerJugador
-      manejarJugador(obtenerJugador === "X" ? "O" : "X")
+
+      const checkWinner = posiblesGanadores.some(([a, b, c]) => {
+        return (
+          nuevoTablero[a] !== "" && nuevoTablero[a] === nuevoTablero[b] && nuevoTablero[a] === nuevoTablero[c] 
+        )
+      })
+
+      if(checkWinner){
+        capturarMensaje(`Gana el jugador ${obtenerJugador}`)
+        return
+      }
+
+      const checkTie = nuevoTablero.every((posicion) => posicion !== "")
+      if(checkTie){
+        capturarMensaje("Empate!")
+        return
+      }
     }
+    const nextPlayer = obtenerJugador === "X" ? "O" : "X"
+    manejarJugador(nextPlayer)
+    capturarMensaje(`Turno de ${nextPlayer}`)
   }
 
   return (
